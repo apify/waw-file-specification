@@ -48,7 +48,7 @@ Here follows a top-level view of the Workflow file:
 ```javascript
 {
 	"meta" : {
-		...
+        ...
 	}
 	"workflow": [
 		{
@@ -188,7 +188,6 @@ As of now, the format supports the following boolean operators: `$and`, `$or` an
 Note that the ordering of the rules in the file is crucial. Consider the following example:
 
 ```json
-...
 	{
 		"where": { "url": "https://jindrich.bar" },
 		"what": [{ "action A" }]
@@ -197,7 +196,6 @@ Note that the ordering of the rules in the file is crucial. Consider the followi
 		"where": { "url": "https://jindrich.bar" },
 		"what": [{ "action B" }]
 	},
-...
 ```
 
 The `where` conditions in the displayed pairs are the same, i.e. when the interpreter gets to the webpage `https://jindrich.bar`, it has two possible action sequences to carry out. This situation makes little sense, as the workflow definition needs to be as strict as possible and cannot allow non-deterministic behaviour of the interpreter.
@@ -207,7 +205,6 @@ For this reason, the definition of the workflow file says that **only the first 
 Even though the colliding conditions were easy to spot in the example above, this problem can get a little more nuanced, for example:
 
 ```json
-...
 	{
 		"where": { 
 			"selectors": ["h1", "ul"]
@@ -220,7 +217,6 @@ Even though the colliding conditions were easy to spot in the example above, thi
 		},
 		"what": [{ "action B" }]
 	},
-...
 ```
 
 While there is no visible collision in the described conditions, the interpreter behavior might be surprising on the following page:
@@ -316,7 +312,7 @@ As of now, these are:
 - `scroll` - scrolls down the webpage for given number of times (default = `1`).
 - `script` - allows the user to run an arbitrary asynchronous function in the interpreter. The function's body is read as a string from the `params` field and evaluated at the server side (as opposed to a browser). The function accepts one parameter named `page`, being the current Playwright Page instance.
 	- Example:
-	```json
+	```javascript
 	{
 		"action": "script",
 		"args": ["\
@@ -348,9 +344,7 @@ Apart from the mentioned syntax available for direct workflow specification, the
 The format supports usage of regular expressions, both in the conditions and the action parameters. The syntax is inspired by the MongoDB regex syntax and looks as follows:
 
 ```json
-...
-	"url": {"$regex": "^https"}
-...
+    "url": {"$regex": "^https"}
 ```
 
 Such a rule matches every URL on a secured website, i.e. starting with `https`.
@@ -360,12 +354,12 @@ Such a rule matches every URL on a secured website, i.e. starting with `https`.
 The WAW format also allows the developer to parametrize the workflow - this can be particularly useful, e.g. for letting the user insert their login information, URL to be scraped etc.
 
 ```json
-...
-	"action": "goto"
+{
+	"action": "goto",
 	"args": [
 		{"$param": "startURL"}
-	]
-...
+    ]
+}
 ```
 
 The interpreter of the format should allow the user to include their own value to replace the entire parameter structure with the user-supplied value. 
